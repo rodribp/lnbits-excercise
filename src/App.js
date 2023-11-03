@@ -13,6 +13,7 @@ function App() {
     const [transactions, setTransactions] = useState([]);
     const [balance, setBalance] = useState(0);
     const [btcPrice, setBtcPrice] = useState(0);
+    const [amountForm, setAmountForm] = useState(5);
 
     const addTransaction = (amount, memo) => {
         // Use the functional update form of setTransactions to ensure you're working with the latest state.
@@ -45,6 +46,7 @@ function App() {
         }
 
         const unsubscribe = subscribeToWebSocket((data) => {
+            console.log('1' + data)
             setMessage(data);
             const { memo, amount } = data.payment;
             setBolt('');
@@ -68,7 +70,7 @@ function App() {
     }, [])
 
     const handleCreateInvoice = async (e) => {
-        const invoice = await createInvoice(10, 'Invoice');
+        const invoice = await createInvoice(amountForm, 'Invoice');
 
         setBolt(invoice.payment_request);
     }
@@ -84,11 +86,12 @@ function App() {
             <Container className='app' >
                 <br/>
                 <Card>
-                    <Card.Header><h5>Your balance</h5>    <span>BTC Price: {btcPrice}</span></Card.Header>
+                    <Card.Header><h5>Your balance</h5>    <span>BTC Price: ${btcPrice}</span></Card.Header>
                     <Card.Body><h1>{balance != 0 ?  balance.toFixed(0) + ' SATS = $' + (balance * btcPrice / 100000000).toFixed(2) : 0}</h1></Card.Body>
                 </Card>
                 <br/>
                 <Button variant='primary' onClick={handleCreateInvoice}>Create Invoice</Button>
+                <input value={amountForm} onChange={(e) => setAmountForm(e.target.value)}></input>
                 <br/>
                 {bolt ? <QRCodeSVG value={bolt} size={250} /> : ''}
                 <br/>

@@ -3,8 +3,14 @@ const socket = new WebSocket('wss://legend.lnbits.com/api/v1/ws/' + WALLET_ID)
 
 const listeners = [];
 
+socket.onopen = function (event) {
+  console.log(socket);
+}
+
 socket.onmessage = function ({data}) {
     let res = JSON.parse(data.toString());
+
+    console.log(res);
 
     if (!res.payment) {
         console.log('Response is not a payment ' + res);
